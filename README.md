@@ -11,17 +11,17 @@ npm install -g npm
 After that, its necesary to install Node js that can be downloaded from this link: 
 ```
 https://nodejs.org/en/download
-
+```
 
 ## Resources to Install:
 ```
 npm install express body-parser speakeasy qrcode --save
-
+```
 
 ## Usage
 Run the folloing command in your terminal.
 ```
 node app.js
-
+```
 
 
