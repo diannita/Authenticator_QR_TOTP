@@ -14,9 +14,9 @@ https://nodejs.org/en/download
 
 
 ## Resources to Install:
-``
-npm install express body-parser speakeasy qrcode --save
 ```
+npm install express body-parser speakeasy qrcode --save
+
 
 ## Usage
 Run the folloing command in your terminal.
