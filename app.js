@@ -1,30 +1,30 @@
-const Express = require("express");
-const BodyParser = require("body-parser");
+const express = require("express");
+const bodyParser = require("body-parser");
 const speakeasy = require("speakeasy");
 const qrcode = require("qrcode");
 
-const app = Express();
+const app = express();
 const LABEL = "My QR Code Generator";
 const ISSUER = "Diana Rodriguez";
 
-app.use(BodyParser.json());
-app.use(BodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Genera un secreto TOTP y un código QR
+// Generates a TOTP secret and QR code
 app.get("/totp-secret", async (req, res) => {
   try {
-    // Genera un secreto TOTP de 20 caracteres
+    // Generates a 20-character TOTP secret
     const secret = speakeasy.generateSecret({ length: 20 });
-    // Genera una URL otpauth para el secreto generado
+    // Generates an otpauth URL for the generated secret
     const otpauthUrl = speakeasy.otpauthURL({
       secret: secret.base32,
       label: LABEL,
       issuer: ISSUER,
       algorithm: "sha1",
     });
-    // Genera una imagen de código QR para la URL otpauth
+    // Generates a QR code image for the otpauth URL
     const imageUrl = await qrcode.toDataURL(otpauthUrl);
-    // Envía la imagen de código QR y el secreto generado al cliente
+    // Sends the QR code image and generated secret to the client
     res.send(`
       <p>Scan this QR code with Google Authenticator:</p>
       <img src="${imageUrl}"/>
@@ -32,50 +32,50 @@ app.get("/totp-secret", async (req, res) => {
       <pre>${secret.base32}</pre>
     `);
   } catch (err) {
-    // Envía un error 500 si hay un problema generando el código QR
+    // Sends a 500 error if there is a problem generating the QR code
     res.status(500).send("Error generating QR code");
   }
 });
 
-// Genera un token TOTP
+// Generates a TOTP token
 app.post("/totp-generate", (req, res) => {
   const { secret } = req.body;
-  // Genera un token TOTP utilizando el secreto proporcionado
+  // Generates a TOTP token using the provided secret
   const token = speakeasy.totp({
     secret,
     encoding: "base32",
   });
-  // Calcula el tiempo restante antes de que el token expire
+  // Calculates the time remaining before the token expires
   const remaining = 30 - Math.floor((new Date().getTime() / 1000.0) % 30);
-  // Envía el token y el tiempo restante al cliente
+  // Sends the token and remaining time to the client
   res.send({
     token,
     remaining,
   });
 });
 
-// Valida un token TOTP
+// Validates a TOTP token
 app.post("/totp-validate", (req, res) => {
   const { secret, token } = req.body;
   try {
-    // Valida el token TOTP utilizando el secreto proporcionado
+    // Validates the TOTP token using the provided secret
     const valid = speakeasy.totp.verify({
       secret,
       encoding: "base32",
       token,
       window: 0,
     });
-    // Envía si el token es válido o no al cliente
+    // Sends whether the token is valid or not to the client
     res.send({
       valid,
     });
   } catch (err) {
-    // Envía un error 500 si hay un problema validando el token TOTP
+    // Sends a 500 error if there is a problem validating the TOTP token
     res.status(500).send("Error validating TOTP token");
   }
 });
 
-// Inicia el servidor en el puerto 3000
+// Starts the server on port 3000
 app.listen(3000, () => {
   console.log("Listening on port: 3000...");
 });
