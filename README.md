@@ -6,6 +6,7 @@
 We need to install npm. Npm is the default package manager for the JavaScript runtime environment Node.js.
 ```
 npm install -g npm
+```
 
 After that, its necesary to install Node js that can be downloaded from this link: 
 ```
