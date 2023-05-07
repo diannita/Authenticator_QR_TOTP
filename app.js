@@ -10,8 +10,8 @@ const ISSUER = "Diana Rodriguez";
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Generates a TOTP secret and QR code
-app.get("/totp-secret", async (req, res) => {
+// Generates a TOTP secret and QR code - npm start
+app.get("/", async (req, res) => {
   try {
     // Generates a 20-character TOTP secret
     const secret = speakeasy.generateSecret({ length: 20 });
